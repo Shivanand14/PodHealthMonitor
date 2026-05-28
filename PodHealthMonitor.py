@@ -132,7 +132,7 @@ def analyze_pods(pod_data):
     print(f"Failed Pods: {failed_pods}")
     print(f"Warning Pods: {warning_pods}")
 
-    print("\nMonitoring completed at: {datetime.now()}\n")
+    print(f"\nMonitoring completed at: {datetime.now()}\n")
     print("--------------------------------------")
 
 # ============================================
