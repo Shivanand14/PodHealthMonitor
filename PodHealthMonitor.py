@@ -91,7 +91,7 @@ def analyze_pods(pod_data):
 
             if "waiting" in state:
 
-                waitting_reasons += state["waiting"].get("reason", "") + " "
+                waiting_reasons += state["waiting"].get("reason", "") + " "
 
     # ====================================
     # Health Logic
