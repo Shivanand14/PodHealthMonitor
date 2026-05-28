@@ -32,14 +32,7 @@ def run_kubectl_command(command):
 
 def get_pods():
 
-    command =         [
-        "kubectl",
-        "get",
-        "pods",
-        "-A",
-        "-o",
-        "json"
-         ]
+    command =  "kubectl get pods -A -o json"
 
     output = run_kubectl_command(command)
 
@@ -91,7 +84,7 @@ def analyze_pods(pod_data):
 
             if "waiting" in state:
 
-                waitting_reasons += state["waiting"].get("reason", "") + " "
+                waiting_reasons += state["waiting"].get("reason", "") + " "
 
     # ====================================
     # Health Logic
@@ -107,33 +100,51 @@ def analyze_pods(pod_data):
         health_status = "WARNING"
         warning_pods += 1
 
-    elif waiting_reasons == "CrashLoopBackOff":
-        health_status = "CRITICAL"
+    elif "CrashLoopBackOff" in waiting_reasons:
         unhealthy_pods += 1
+
+    elif phase == "Pending":
+         pending_pods += 1
 
     else:
 
         running_pods += 1
+    output_text = f"""
+    "\n=============================================\n"
+    " Kubernets Pod health Monitor\n"
+    "===============================================\n"
+    "Scan Time: {datetime.now()}\n"
+    "-----------------------------------------------\n"
+    " Cluster Summary\n"
+    "===============================================\n"
+
 
     # ====================================
     # Display Pod Status
     # ==================================== 
 
-    print("--------------------------------------")
-    print(" Cluster Summary")
-    print("======================================")
+    "--------------------------------------"
+    " Cluster Summary"
+    "======================================"
 
 
-    print(f"Total Pods: {total_pods}")
-    print(f"Running Pods: {running_pods}")  
-    print(f"Pending Pods: {pending_pods}")
-    print(f"Healthy Pods: {healthy_pods}")
-    print(f"Unhealthy Pods: {unhealthy_pods}")
-    print(f"Failed Pods: {failed_pods}")
-    print(f"Warning Pods: {warning_pods}")
+    "Total Pods: {total_pods}"
+    "Running Pods: {running_pods}"  
+    "Pending Pods: {pending_pods}"
+    "Healthy Pods: {healthy_pods}"
+    "Unhealthy Pods: {unhealthy_pods}"
+    "Failed Pods: {failed_pods}"
+    "Warning Pods: {warning_pods}"
 
-    print("\nMonitoring completed at: {datetime.now()}\n")
-    print("--------------------------------------")
+    "\nMonitoring completed at: {datetime.now()}\n"
+    "--------------------------------------"
+"""
+
+log_file_path = "monitor_history.log"
+with open(log_file_path, "a") as log_file:
+    print(f" Report Successfully Saved to: {log_file_path}\n")
+
+
 
 # ============================================
 # Main Function
